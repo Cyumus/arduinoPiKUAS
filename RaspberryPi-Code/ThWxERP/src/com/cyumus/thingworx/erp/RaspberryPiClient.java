@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import com.cyumus.thingworx.erp.comm.Xbee;
 import com.cyumus.thingworx.erp.things.BinThing;
@@ -27,65 +26,25 @@ public class RaspberryPiClient extends ConnectedThingClient {
 		this.items = new HashMap<String,ItemThing>();
 	}
 	
-	public static void main(String[] args) throws Exception {
-		// We create the configuration stuff and blablabla~
-		ClientConfigurator config = new ClientConfigurator();
-		// Websocket~
-		config.setUri("ws://localhost:80/Thingworx/WS");
-		// Reconnect every 15 seconds...
-		config.setReconnectInterval(15);
-		
-		// Using of credentials...
-		SecurityClaims claims = SecurityClaims.fromCredentials("Arduino", "1234");
-		config.setSecurityClaims(claims);
-		
-		// The name of the Gateway
-		config.setName("RaspberryPiGateway");
-		// It's a SDK Type
-		config.setAsSDKType();
-		
-		// We ignore all these bothering SSL errors. 
-		config.ignoreSSLErrors(true);
-		
-		// The delay of the Thing.
-		int delay = 1000;
-		
-		// We create  client that will use the Sensor.
-		// In this case, this is a virtual representation of the Raspberry Pi.
-		RaspberryPiClient client = new RaspberryPiClient(config);
-		
-		// We create all things from the config file.
-		client.getThingsFromConfig();
-		
-		// We bind all things
-		client.bindThings();
-		
-		// We set the communication with the XBee
-		client.setXBee(Xbee.getSingleton());
-		
-		// We initialize the communication with the XBee
-		client.xbee.init();
-		
-		try {
-			// We say to the client to start working.
-			client.start();
-		}
-		catch(Exception eStart) {
-			System.out.println("Initial Start Failed : " + eStart.getMessage());
-		}
-		
-		// While the client is working
-		while(!client.isShutdown()) {
-			// If the client is connected to Thingworx
-			if(client.isConnected()) {
-				for (ItemThing item:client.items.values()){
-					// It makes the sensor to scan
-					client.scan(item);
+	/**
+	 * This function scans, process and updates all things while the value is active.
+	 * @throws Exception 
+	 */
+	public void startScanProcess(int delay) throws Exception{
+		synchronized (this){
+			// While the client is working
+			while(!this.isShutdown()) {
+				// If the client is connected to Thingworx
+				if(this.isConnected()) {
+					for (ItemThing item:this.items.values()){
+						// It makes the sensor to scan
+						this.scan(item);
+					}
+					// And it updates its values to Thingworx
+					this.processAndUpdateAllThings();
 				}
-				// And it updates its values to Thingworx
-				client.processAndUpdateAllThings();
+				Thread.sleep(delay);
 			}
-			Thread.sleep(delay);
 		}
 	}
 	
@@ -103,7 +62,7 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	 * This function gets all the configuration from a file and creates the things.
 	 * @throws Exception 
 	 */
-	private void getThingsFromConfig() throws Exception{
+	public void getThingsFromConfig() throws Exception{
 		List<String> lines = Files.readAllLines(Paths.get("./things/things.txt"));
 		LocationThing currLocation = null;
 		BinThing currBin = null;
@@ -140,7 +99,7 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	 * This function binds all things to the client
 	 * @throws Exception 
 	 */
-	private void bindThings() throws Exception{
+	public void bindThings() throws Exception{
 		for (LocationThing loc:this.locs.values()) this.bindThing(loc);
 		for (BinThing bin:this.bins.values()) this.bindThing(bin);
 		for (ItemThing item:this.items.values()) this.bindThing(item);
@@ -172,5 +131,5 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	public void setXBee(Xbee xbee){
 		this.xbee = xbee;
 	}	
-	
+	public Xbee getXBee(){return this.xbee;}
 }
