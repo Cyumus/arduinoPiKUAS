@@ -7,3 +7,9 @@ Location A/A location/LA
 Location B/A location/LB
 	Bin C/A bin/BC
 		Item D/An item/ID
+Location C/A location/LC
+	Bin D/A bin/BD
+		Item E/An item/IE
+		Item F/An item/IF
+	Bin E/A bin/BE
+		Item G/An item/IG

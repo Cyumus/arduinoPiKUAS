@@ -86,8 +86,7 @@ public class ItemThing extends VirtualThing implements Runnable {
 	 * Then, it defines a new Data Shape, called ItemAmount, that can be returned to
 	 * Thingworx if called from there.
 	 */
-	private void init() 
-	{
+	private void init() {
 		initializeFromAnnotations();
 		
         FieldDefinitionCollection fields = new FieldDefinitionCollection();

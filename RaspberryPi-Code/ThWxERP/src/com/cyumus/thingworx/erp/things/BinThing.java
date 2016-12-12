@@ -65,8 +65,7 @@ public class BinThing extends VirtualThing implements Runnable {
 	 * Then, it defines a new Data Shape, called ItemAmount, that can be returned to
 	 * Thingworx if called from there.
 	 */
-	private void init() 
-	{
+	private void init() {
 		initializeFromAnnotations();
 		
         FieldDefinitionCollection fields = new FieldDefinitionCollection();
@@ -90,10 +89,12 @@ public class BinThing extends VirtualThing implements Runnable {
 	public void addItem(ItemThing item){
 		this.items.put(item.getName(), item);
 		item.setBin(this);
+		item.setLocation(this.location);
 	}
 	public void removeItem(ItemThing item){
 		this.items.remove(item.getName());
 		item.setBin(null);
+		item.setLocation(null);
 	}
 	public boolean hasItem(ItemThing item){return this.items.containsKey(item.getName());}
 	

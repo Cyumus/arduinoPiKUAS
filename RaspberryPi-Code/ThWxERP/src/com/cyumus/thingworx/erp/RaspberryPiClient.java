@@ -1,6 +1,5 @@
 package com.cyumus.thingworx.erp;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -74,12 +73,22 @@ public class RaspberryPiClient extends ConnectedThingClient {
 				for (ItemThing item:client.items.values()){
 					// It makes the sensor to scan
 					client.scan(item);
-					// And it updates its values to Thingworx
-					item.processScanRequest();
 				}
+				// And it updates its values to Thingworx
+				client.processAndUpdateAllThings();
 			}
 			Thread.sleep(delay);
 		}
+	}
+	
+	/**
+	 * This function makes all things to process and update their current state to Thingworx.
+	 * @throws Exception
+	 */
+	private void processAndUpdateAllThings() throws Exception{
+		for (LocationThing loc:this.locs.values()) loc.processScanRequest();
+		for (BinThing bin:this.bins.values()) bin.processScanRequest();
+		for (ItemThing item:this.items.values()) item.processScanRequest();
 	}
 	
 	/**
@@ -135,7 +144,7 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	 * @param item The item binded with the Arduino board
 	 */
 	private void scan(ItemThing item){
-		item.setAmount(new Random().nextInt());
+		item.setAmount(Math.abs(new Random().nextInt()));
 	}
 	
 	

@@ -5,19 +5,14 @@ import java.util.HashMap;
 import com.thingworx.communications.client.ConnectedThingClient;
 import com.thingworx.communications.client.things.VirtualThing;
 import com.thingworx.metadata.FieldDefinition;
-import com.thingworx.metadata.annotations.ThingworxEventDefinition;
-import com.thingworx.metadata.annotations.ThingworxEventDefinitions;
 import com.thingworx.metadata.annotations.ThingworxPropertyDefinition;
 import com.thingworx.metadata.annotations.ThingworxPropertyDefinitions;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
 import com.thingworx.metadata.collections.FieldDefinitionCollection;
 import com.thingworx.types.BaseTypes;
-import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.constants.CommonPropertyNames;
-import com.thingworx.types.primitives.IntegerPrimitive;
-import com.thingworx.types.primitives.StringPrimitive;
+import com.thingworx.types.primitives.structs.Location;
 
 @SuppressWarnings("serial")
 
@@ -26,6 +21,7 @@ import com.thingworx.types.primitives.StringPrimitive;
  */
 @ThingworxPropertyDefinitions(properties = {	
 	@ThingworxPropertyDefinition(name="LocationCode", description="The identification string of the location", baseType="STRING", category="Status", aspects={"isReadOnly:false"}),	
+	@ThingworxPropertyDefinition(name="Location", description="The location where it is", baseType="LOCATION", category="Status", aspects={"isReadOnly:false"}),
 })
 
 /**
@@ -33,6 +29,7 @@ import com.thingworx.types.primitives.StringPrimitive;
  */
 public class LocationThing extends VirtualThing implements Runnable {
 	private String LocationCode;
+	private Location Location;
 	private HashMap<String,BinThing> bins;
 	private Thread _shutdownThread = null;
 	
@@ -49,6 +46,7 @@ public class LocationThing extends VirtualThing implements Runnable {
 	public LocationThing(String name, String description, String identifier, ConnectedThingClient client) {
 		super(name,description,identifier,client);
 		this.LocationCode = identifier;
+		this.Location = new Location();
 		this.bins = new HashMap<String,BinThing>();
 
 		super.initializeFromAnnotations();
@@ -68,8 +66,7 @@ public class LocationThing extends VirtualThing implements Runnable {
 	 * Then, it defines a new Data Shape, called ItemAmount, that can be returned to
 	 * Thingworx if called from there.
 	 */
-	private void init() 
-	{
+	private void init() {
 		initializeFromAnnotations();
 		
         FieldDefinitionCollection fields = new FieldDefinitionCollection();
@@ -96,6 +93,10 @@ public class LocationThing extends VirtualThing implements Runnable {
 		}
 		return false;
 	}
+	public void setGPS(double longitude, double latitude, double elevation){
+		this.Location = new Location(longitude,latitude,elevation);
+	}
+	public Location getGPS(){return this.Location;}
 	
 	/**
 	 * This function is used in a loop with a delay.
@@ -113,6 +114,7 @@ public class LocationThing extends VirtualThing implements Runnable {
 	 */
 	public void update() throws Exception {
 		super.setProperty("LocationCode", this.LocationCode);
+		super.setProperty("Location", this.Location);
 		super.updateSubscribedProperties(15000);
 		super.updateSubscribedEvents(60000);
 	}
