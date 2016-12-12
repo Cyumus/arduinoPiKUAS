@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="lib/thingworx-common-6.0.0.189.jar"/>
 	<classpathentry kind="lib" path="lib/thingworx-communications-client-6.0.0.189.jar"/>
 	<classpathentry kind="lib" path="lib/thingworx-java-sdk-6.0.0.189-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

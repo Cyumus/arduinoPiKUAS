@@ -21,6 +21,7 @@ import com.thingworx.types.constants.CommonPropertyNames;
 @ThingworxPropertyDefinitions(properties = {	
 	@ThingworxPropertyDefinition(name="LocationCode", description="The identification string of the location", baseType="STRING", category="Status", aspects={"isReadOnly:false"}),
 	@ThingworxPropertyDefinition(name="BinCode", description="The identification string of the bin", baseType="STRING", category="Status", aspects={"isReadOnly:false"}),
+	@ThingworxPropertyDefinition(name="BinDepth", description="The depth of the bin", baseType="NUMBER", category="Status", aspects={"isReadOnly:false"}),
 	
 })
 
@@ -32,6 +33,7 @@ public class BinThing extends VirtualThing implements Runnable {
 	private LocationThing location;
 	private HashMap<String,ItemThing> items;
 	private Thread _shutdownThread = null;
+	private float depth;
 	
 	/**
 	 * The constructor of the Bin. It creates the sensor with the name, description, id, and the client that uses it.
@@ -43,10 +45,11 @@ public class BinThing extends VirtualThing implements Runnable {
 	 * @param identifier A string of characters to identify it on Thingworx
 	 * @param client Who uses this Sensor.
 	 */
-	public BinThing(String name, String description, String identifier, ConnectedThingClient client) {
+	public BinThing(String name, String description, String identifier, float depth, ConnectedThingClient client) {
 		super(name,description,identifier,client);
 		this.BinCode = identifier;
 		this.items = new HashMap<String,ItemThing>();
+		this.depth = depth;
 
 		super.initializeFromAnnotations();
 		this.init();
@@ -71,6 +74,7 @@ public class BinThing extends VirtualThing implements Runnable {
         FieldDefinitionCollection fields = new FieldDefinitionCollection();
         fields.addFieldDefinition(new FieldDefinition("LocationCode", BaseTypes.STRING));
         fields.addFieldDefinition(new FieldDefinition("BinCode", BaseTypes.STRING));
+        fields.addFieldDefinition(new FieldDefinition("Depth", BaseTypes.NUMBER));
         defineDataShapeDefinition("BinShape", fields);
 	}
 	
@@ -97,6 +101,8 @@ public class BinThing extends VirtualThing implements Runnable {
 		item.setLocation(null);
 	}
 	public boolean hasItem(ItemThing item){return this.items.containsKey(item.getName());}
+	public void setDepth(float d){this.depth=d;}
+	public float getDepth(){return this.depth;}
 	
 	/**
 	 * This function is used in a loop with a delay.

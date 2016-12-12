@@ -1,15 +1,15 @@
 Location A/A location/LA
-	Bin A/A bin/BA
-		Item A/An item/IA
-		Item B/An item/IB
-	Bin B/A bin/BB
-		Item C/An item/IC
+	Bin A/A bin/BA/100
+		Item A/An item/IA/2
+		Item B/An item/IB/3
+	Bin B/A bin/BB/100
+		Item C/An item/IC/3
 Location B/A location/LB
-	Bin C/A bin/BC
-		Item D/An item/ID
+	Bin C/A bin/BC/100
+		Item D/An item/ID/3
 Location C/A location/LC
-	Bin D/A bin/BD
-		Item E/An item/IE
-		Item F/An item/IF
-	Bin E/A bin/BE
-		Item G/An item/IG
+	Bin D/A bin/BD/100
+		Item E/An item/IE/2
+		Item F/An item/IF/5
+	Bin E/A bin/BE/100
+		Item G/An item/IG/10

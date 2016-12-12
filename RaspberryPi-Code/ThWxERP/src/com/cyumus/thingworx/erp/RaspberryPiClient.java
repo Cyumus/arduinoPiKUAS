@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.cyumus.thingworx.erp.comm.Xbee;
 import com.cyumus.thingworx.erp.things.BinThing;
 import com.cyumus.thingworx.erp.things.ItemThing;
 import com.cyumus.thingworx.erp.things.LocationThing;
@@ -17,6 +18,7 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	private HashMap<String,LocationThing> locs;
 	private HashMap<String,BinThing> bins;
 	private HashMap<String,ItemThing> items;
+	private Xbee xbee;
 	
 	public RaspberryPiClient(ClientConfigurator config) throws Exception {
 		super(config);
@@ -57,6 +59,12 @@ public class RaspberryPiClient extends ConnectedThingClient {
 		
 		// We bind all things
 		client.bindThings();
+		
+		// We set the communication with the XBee
+		client.setXBee(Xbee.getSingleton());
+		
+		// We initialize the communication with the XBee
+		client.xbee.init();
 		
 		try {
 			// We say to the client to start working.
@@ -112,13 +120,13 @@ public class RaspberryPiClient extends ConnectedThingClient {
 					break;
 				case 2: // If you use the tab once, it means that it's a Bin
 					argv = str[1].split("/");
-					currBin = new BinThing(argv[0], argv[1], argv[2], this);
+					currBin = new BinThing(argv[0], argv[1], argv[2], Float.parseFloat(argv[3]), this);
 					this.bins.put(currBin.getName(), currBin);
 					currLocation.addBin(currBin);
 					break;
 				case 3: // If you use the tab twice, it means that it's an Item
 					argv = str[2].split("/");
-					currItem = new ItemThing(argv[0], argv[1], argv[2], this);
+					currItem = new ItemThing(argv[0], argv[1], argv[2], Float.parseFloat(argv[3]), this);
 					this.items.put(currItem.getName(), currItem);
 					currBin.addItem(currItem);
 					break;
@@ -144,8 +152,25 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	 * @param item The item binded with the Arduino board
 	 */
 	private void scan(ItemThing item){
-		item.setAmount(Math.abs(new Random().nextInt()));
+		float distanceToNextItem = this.xbee.getDistance();
+		float distanceToDeepest = item.getBin().getDepth();
+		float itemSize = item.getSize();
+		// (Scanner)<====================[][][]|
+		//          | distanceToNextItem |
+		//			|	distanceToDeepest      |
+		//                               |delta|
+		
+		float delta = distanceToDeepest - distanceToNextItem;
+		int amount = (int) (delta / itemSize);
+		item.setAmount(amount);
 	}
 	
+	/**
+	 * This function sets the communication XBee device.
+	 * @param xbee
+	 */
+	public void setXBee(Xbee xbee){
+		this.xbee = xbee;
+	}	
 	
 }

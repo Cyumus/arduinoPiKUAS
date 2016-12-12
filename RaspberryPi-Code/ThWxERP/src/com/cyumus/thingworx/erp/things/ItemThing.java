@@ -15,6 +15,7 @@ import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.constants.CommonPropertyNames;
 import com.thingworx.types.primitives.IntegerPrimitive;
+import com.thingworx.types.primitives.NumberPrimitive;
 import com.thingworx.types.primitives.StringPrimitive;
 
 @SuppressWarnings("serial")
@@ -27,6 +28,7 @@ import com.thingworx.types.primitives.StringPrimitive;
 	@ThingworxPropertyDefinition(name="LocationCode", description="The identification string of the item", baseType="STRING", category="Status", aspects={"isReadOnly:false"}),
 	@ThingworxPropertyDefinition(name="BinCode", description="The bin where the item is.", baseType="STRING", category="Status", aspects={"isReadOnly:false"}),
 	@ThingworxPropertyDefinition(name="ItemAmount", description="The amount of this item in the location", baseType="INTEGER", category="Status", aspects={"isReadOnly:false"}),
+	@ThingworxPropertyDefinition(name="Size", description="The size of this item", baseType="NUMBER", category="Status", aspects={"isReadOnly:false"}),
 })
 
 /**
@@ -45,6 +47,7 @@ public class ItemThing extends VirtualThing implements Runnable {
 	private BinThing bin;
 	private LocationThing location;
 	private int ItemAmount;
+	private float size;
 	private Thread _shutdownThread = null;
 	
 	/**
@@ -57,9 +60,10 @@ public class ItemThing extends VirtualThing implements Runnable {
 	 * @param identifier A string of characters to identify it on Thingworx
 	 * @param client Who uses this Sensor.
 	 */
-	public ItemThing(String name, String description, String identifier, ConnectedThingClient client) {
+	public ItemThing(String name, String description, String identifier, float size, ConnectedThingClient client) {
 		super(name,description,identifier,client);
 		this.ItemID = identifier;
+		this.size = size;
 		
 		FieldDefinitionCollection faultFields = new FieldDefinitionCollection();
 		faultFields.addFieldDefinition(new FieldDefinition(CommonPropertyNames.PROP_MESSAGE,BaseTypes.STRING));
@@ -86,7 +90,8 @@ public class ItemThing extends VirtualThing implements Runnable {
 	 * Then, it defines a new Data Shape, called ItemAmount, that can be returned to
 	 * Thingworx if called from there.
 	 */
-	private void init() {
+	private void init() 
+	{
 		initializeFromAnnotations();
 		
         FieldDefinitionCollection fields = new FieldDefinitionCollection();
@@ -94,6 +99,7 @@ public class ItemThing extends VirtualThing implements Runnable {
         fields.addFieldDefinition(new FieldDefinition("LocationCode", BaseTypes.STRING));
         fields.addFieldDefinition(new FieldDefinition("BinCode", BaseTypes.STRING));
         fields.addFieldDefinition(new FieldDefinition("ItemAmount", BaseTypes.INTEGER));
+        fields.addFieldDefinition(new FieldDefinition("Size", BaseTypes.NUMBER));
         defineDataShapeDefinition("ItemAmount", fields);
 	}
 	
@@ -129,6 +135,7 @@ public class ItemThing extends VirtualThing implements Runnable {
 			entry.SetStringValue("LocationCode", new StringPrimitive(this.LocationCode));
 			entry.SetStringValue("BinCode", new StringPrimitive(this.BinCode));
 			entry.SetIntegerValue("ItemAmount", new IntegerPrimitive(this.ItemAmount));
+			entry.SetNumberValue("Size", new NumberPrimitive((double) this.size));
 			table.addRow(entry.clone());
 		} 
 		catch (Exception e){
@@ -149,7 +156,11 @@ public class ItemThing extends VirtualThing implements Runnable {
 		if (bin==null) this.BinCode = "No Bin";
 		else this.BinCode=bin.getIdentifier();
 		this.bin=bin;}
+	public BinThing getBin(){return this.bin;}
+	public LocationThing getLocation(){return this.location;}
 	public void setAmount(int a){this.ItemAmount=a;}
+	public void setSize(float s){this.size=s;}
+	public float getSize(){return this.size;}
 	
 	/**
 	 * This function is used in a loop with a delay.
