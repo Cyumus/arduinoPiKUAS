@@ -132,4 +132,8 @@ public class RaspberryPiClient extends ConnectedThingClient {
 		this.xbee = xbee;
 	}	
 	public Xbee getXBee(){return this.xbee;}
+	
+	public HashMap<String,LocationThing> getLocations(){return this.locs;}
+	public HashMap<String,BinThing> getBins(){return this.bins;}
+	public HashMap<String,ItemThing> getItems(){return this.items;}
 }

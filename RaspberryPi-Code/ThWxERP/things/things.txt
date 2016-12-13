@@ -13,3 +13,6 @@ Location C/A location/LC
 		Item F/An item/IF/5
 	Bin E/A bin/BE/100
 		Item G/An item/IG/10
+Location D/A location/ LC
+	Bin F/A bin/BF/100
+		Item H/An item/IH/3

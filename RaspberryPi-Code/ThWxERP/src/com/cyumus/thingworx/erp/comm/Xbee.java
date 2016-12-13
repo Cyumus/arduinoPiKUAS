@@ -38,7 +38,6 @@ public class Xbee {
 			myDevice.addDataListener(this.listener);
         } catch (XBeeException e) {
         	e.printStackTrace();
-            System.exit(1);
         }
     }
     

@@ -103,6 +103,7 @@ public class BinThing extends VirtualThing implements Runnable {
 	public boolean hasItem(ItemThing item){return this.items.containsKey(item.getName());}
 	public void setDepth(float d){this.depth=d;}
 	public float getDepth(){return this.depth;}
+	public HashMap<String, ItemThing> getItems(){return this.items;}
 	
 	/**
 	 * This function is used in a loop with a delay.

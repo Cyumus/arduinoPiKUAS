@@ -86,6 +86,7 @@ public class LocationThing extends VirtualThing implements Runnable {
 		this.bins.remove(bin.getName());
 		bin.setLocation(null);
 	}
+	public HashMap<String, BinThing> getBins(){ return this.bins;}
 	public boolean hasBin(BinThing bin){return this.bins.containsKey(bin.getName());}
 	public boolean hasItem(ItemThing item){
 		for (BinThing bin:this.bins.values()){
