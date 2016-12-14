@@ -1,6 +1,7 @@
 package com.cyumus.thingworx.erp.things;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.thingworx.communications.client.ConnectedThingClient;
 import com.thingworx.communications.client.things.VirtualThing;
@@ -98,6 +99,13 @@ public class LocationThing extends VirtualThing implements Runnable {
 		this.Location = new Location(longitude,latitude,elevation);
 	}
 	public Location getGPS(){return this.Location;}
+	public HashMap<String, ItemThing> getItems(){
+		HashMap<String, ItemThing> items = new HashMap<String, ItemThing>();
+		for (BinThing bin:this.bins.values()){
+			items.putAll(bin.getItems());
+		}
+		return items;
+	}
 	
 	/**
 	 * This function is used in a loop with a delay.

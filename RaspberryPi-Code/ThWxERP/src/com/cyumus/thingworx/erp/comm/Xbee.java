@@ -24,7 +24,8 @@ public class Xbee {
     private MyDataReceiveListener listener;
     private static Xbee xbee;
     private Xbee(){
-    	this.PORT = "/dev/ttyUSB0";
+    	//this.PORT = "/dev/ttyUSB0";
+    	this.PORT = "COM4";
     	this.BAUD_RATE = 9600;
     	this.listener = new MyDataReceiveListener();
     }

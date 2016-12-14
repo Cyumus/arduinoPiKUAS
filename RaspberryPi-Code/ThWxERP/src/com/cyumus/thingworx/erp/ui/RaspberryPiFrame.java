@@ -11,6 +11,7 @@ import com.cyumus.thingworx.erp.RaspberryPiClient;
 import com.cyumus.thingworx.erp.comm.RaspberryPiOutputStream;
 import com.cyumus.thingworx.erp.comm.RaspberryPiPrintStream;
 import com.cyumus.thingworx.erp.comm.Xbee;
+import com.cyumus.thingworx.erp.tasks.TaskController;
 import com.cyumus.thingworx.erp.ui.panels.RaspberryPiAbstractPanel;
 import com.cyumus.thingworx.erp.ui.panels.RaspberryPiThingworxConnectPanel;
 import com.cyumus.thingworx.erp.ui.panels.RaspberryPiThingworxLoggingConnectPanel;
@@ -29,6 +30,7 @@ public class RaspberryPiFrame extends JFrame implements Runnable{
 	private volatile Status status = Status.LOGGING;
 	private HashMap<String, String> args;
 	private PrintStream defaultOut, customOut, defaultErr;
+	private TaskController tc;
 	
 	/**
 	 * Launch the application.
@@ -141,6 +143,9 @@ public class RaspberryPiFrame extends JFrame implements Runnable{
 	}
 	public void setClient(RaspberryPiClient client){
 		this.client = client;
+	}
+	public Status getStatus(){
+		return this.status;
 	}
 	public RaspberryPiClient getClient(){
 		return this.client;
@@ -257,6 +262,5 @@ public class RaspberryPiFrame extends JFrame implements Runnable{
 		}
 		panel.setProgress(100);
 		System.out.println("CONNECTED");
-		
 	}
 }

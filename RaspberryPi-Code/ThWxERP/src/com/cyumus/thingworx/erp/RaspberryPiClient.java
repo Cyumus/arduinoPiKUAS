@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.cyumus.thingworx.erp.comm.Xbee;
+import com.cyumus.thingworx.erp.tasks.TaskController;
 import com.cyumus.thingworx.erp.things.BinThing;
 import com.cyumus.thingworx.erp.things.ItemThing;
 import com.cyumus.thingworx.erp.things.LocationThing;
@@ -18,41 +19,34 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	private HashMap<String,BinThing> bins;
 	private HashMap<String,ItemThing> items;
 	private Xbee xbee;
+	private TaskController tc;
 	
 	public RaspberryPiClient(ClientConfigurator config) throws Exception {
 		super(config);
 		this.locs = new HashMap<String,LocationThing>();
 		this.bins = new HashMap<String,BinThing>();
 		this.items = new HashMap<String,ItemThing>();
+		this.tc = new TaskController();
 	}
 	
 	/**
 	 * This function scans, process and updates all things while the value is active.
 	 * @throws Exception 
 	 */
-	public void startScanProcess(int delay) throws Exception{
-		synchronized (this){
-			// While the client is working
-			while(!this.isShutdown()) {
-				// If the client is connected to Thingworx
-				if(this.isConnected()) {
-					for (ItemThing item:this.items.values()){
-						// It makes the sensor to scan
-						this.scan(item);
-					}
-					// And it updates its values to Thingworx
-					this.processAndUpdateAllThings();
-				}
-				Thread.sleep(delay);
-			}
+	public void startScanProcess(HashMap<String, ItemThing> items, int delay) throws Exception{
+		if (!this.isShutdown() && this.isConnected()){
+			this.tc.startScanning(items, delay);
 		}
+	}
+	public void stopScanProcess(){
+		this.tc.stop();
 	}
 	
 	/**
 	 * This function makes all things to process and update their current state to Thingworx.
 	 * @throws Exception
 	 */
-	private void processAndUpdateAllThings() throws Exception{
+	public void processAndUpdateAllThings() throws Exception{
 		for (LocationThing loc:this.locs.values()) loc.processScanRequest();
 		for (BinThing bin:this.bins.values()) bin.processScanRequest();
 		for (ItemThing item:this.items.values()) item.processScanRequest();
@@ -110,7 +104,7 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	 * values of the item.
 	 * @param item The item binded with the Arduino board
 	 */
-	private void scan(ItemThing item){
+	public void scan(ItemThing item){
 		float distanceToNextItem = this.xbee.getDistance();
 		float distanceToDeepest = item.getBin().getDepth();
 		float itemSize = item.getSize();

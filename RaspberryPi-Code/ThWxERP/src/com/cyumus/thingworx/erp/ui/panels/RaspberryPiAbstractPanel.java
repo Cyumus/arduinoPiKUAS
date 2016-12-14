@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import javax.swing.JPanel;
 
+import com.cyumus.thingworx.erp.things.ItemThing;
+
 public class RaspberryPiAbstractPanel extends JPanel{
 	/**
 	 * 
@@ -16,4 +18,6 @@ public class RaspberryPiAbstractPanel extends JPanel{
 	public void setProgress(int i){}
 	public void write(int i){}
 	public void load() throws Exception{}
+	public HashMap<String, ItemThing> getItems(){return null;}
+	public int getTime(){return 0;}
 }
