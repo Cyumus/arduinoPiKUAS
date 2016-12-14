@@ -1,5 +1,7 @@
 package com.cyumus.thingworx.erp.ui.panels;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
@@ -14,14 +16,17 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.cyumus.thingworx.erp.things.BinThing;
 import com.cyumus.thingworx.erp.things.ItemThing;
 import com.cyumus.thingworx.erp.things.LocationThing;
 import com.cyumus.thingworx.erp.ui.RaspberryPiFrame;
-import com.cyumus.thingworx.erp.ui.Status;
 import com.cyumus.thingworx.erp.ui.actions.RaspberryPiActionFactory;
-import javax.swing.JList;
+import com.cyumus.thingworx.erp.ui.actions.StartScanAction;
+import com.cyumus.thingworx.erp.ui.actions.StopScanAction;
+import com.cyumus.thingworx.erp.ui.panels.info.RaspberryPiDefaultInfoPanel;
+import com.cyumus.thingworx.erp.ui.panels.info.RaspberryPiInfoPanelFactory;
 
 public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 
@@ -35,6 +40,8 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 	private JScrollPane scroll;
 	private JTree thingList;
 	private DefaultMutableTreeNode top;
+	private RaspberryPiDefaultInfoPanel infoPanel;
+	public static JButton btnScan, btnStop;
 	/**
 	 * Create the panel.
 	 */
@@ -63,7 +70,13 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 			top = new DefaultMutableTreeNode("Things");
 			try{load();}catch(Exception e){e.printStackTrace();}
 			thingList = new JTree(top);
+			thingList.addMouseListener(new MouseAdapter(){
+				public void mouseClicked(MouseEvent me){
+					doMouseClicked(me);
+				}
+			});
 			scrollPane.setViewportView(thingList);
+			
 			
 			JButton btnCancel = new JButton();
 			btnCancel.setBounds(676, 520, 89, 23);
@@ -85,24 +98,45 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 			btnNew.setEnabled(false);
 			add(btnNew);
 			
-			JButton btnStop = new JButton();
+			btnStop = new JButton();
 			btnStop.setBounds(676,  410, 89, 23);
 			btnStop.setAction(RaspberryPiActionFactory.newAction(STOP));
 			btnStop.setText("Stop");
-			btnStop.setEnabled(true);
+			btnStop.setEnabled(false);
 			add(btnStop);
 			
-			JButton btnScan = new JButton();
+			btnScan = new JButton();
 			btnScan.setBounds(676,  380, 89, 23);
 			btnScan.setAction(RaspberryPiActionFactory.newAction(SCAN));
 			btnScan.setText("Scan");
 			btnScan.setEnabled(true);
 			add(btnScan);
+			
+			infoPanel = new RaspberryPiDefaultInfoPanel();
+			infoPanel.setBounds(220, 22, 545, 267);
+			add(infoPanel);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
+	
+	public void doMouseClicked(MouseEvent me){
+		TreePath tp = thingList.getPathForLocation(me.getX(), me.getY());
+		Object thing;
+		if (tp != null){
+			thing = tp.getLastPathComponent();
+			if (infoPanel!=null){
+				this.remove(infoPanel);
+				this.revalidate();
+				this.repaint();
+			}
+			this.infoPanel = RaspberryPiInfoPanelFactory.newPanel(thing);
+			this.infoPanel.setBounds(220,22,545,267);
+			this.add(infoPanel);
+		}
+	}
+	
 	public void write(int i){
 		if (textArea!=null)
 			textArea.append(""+(char) i);
@@ -159,7 +193,7 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 	public int getTime(){
 		return 1000;
 	}
-	class ItemThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
+	public class ItemThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
 		/**
 		 * 
 		 */
@@ -181,7 +215,7 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 			return this.item.getName().compareTo(((ItemThing) o).getName());
 		}
 	}
-	class BinThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
+	public class BinThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
 		/**
 		 * 
 		 */
@@ -206,7 +240,7 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 			return this.bin.hasItem(item);
 		}
 	}
-	class LocationThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
+	public class LocationThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
 		/**
 		 * 
 		 */

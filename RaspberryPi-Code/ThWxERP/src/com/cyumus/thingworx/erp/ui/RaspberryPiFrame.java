@@ -178,17 +178,14 @@ public class RaspberryPiFrame extends JFrame implements Runnable{
 					update(Status.CONNECTED);
 				break;
 				case SLEEPING:
-					this.wait();
 				break;
 				case CONNECTED:
 					args.putAll(panel.getText());
 					this.setNewPanel(new RaspberryPiThingworxMainPanel());
-					System.setOut(customOut);
 					frame.setBounds(100,100,800,600);
 					System.out.println(args.get("logs"));
 				break;
 				case WORKING:
-					
 				break;
 				default:
 					System.exit(1);

@@ -159,6 +159,7 @@ public class ItemThing extends VirtualThing implements Runnable {
 	public BinThing getBin(){return this.bin;}
 	public LocationThing getLocation(){return this.location;}
 	public void setAmount(int a){this.ItemAmount=a;}
+	public int getAmount(){return this.ItemAmount;}
 	public void setSize(float s){this.size=s;}
 	public float getSize(){return this.size;}
 	
