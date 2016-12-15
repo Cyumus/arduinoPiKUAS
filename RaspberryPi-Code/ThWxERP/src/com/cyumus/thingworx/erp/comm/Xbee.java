@@ -23,6 +23,7 @@ public class Xbee {
     private int BAUD_RATE;
     private MyDataReceiveListener listener;
     private static Xbee xbee;
+    private XBeeDevice device;
     private Xbee(){
     	//this.PORT = "/dev/ttyUSB0";
     	this.PORT = "COM4";
@@ -33,10 +34,10 @@ public class Xbee {
     public static Xbee getSingleton(){if(xbee==null) xbee = new Xbee(); return xbee;} 
     
     public void init() {    	
-        XBeeDevice myDevice = new XBeeDevice(this.PORT, this.BAUD_RATE);
+        device = new XBeeDevice(this.PORT, this.BAUD_RATE);
         try {
-        	myDevice.open();
-			myDevice.addDataListener(this.listener);
+        	device.open();
+			device.addDataListener(this.listener);
         } catch (XBeeException e) {
         	e.printStackTrace();
         }
@@ -44,5 +45,8 @@ public class Xbee {
     
     public float getDistance() {
     	return this.listener.getNewestDistance();
+    }
+    public boolean isConnected(){
+    	return device != null && device.isOpen();
     }
 }

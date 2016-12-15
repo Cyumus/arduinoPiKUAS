@@ -30,7 +30,6 @@ public class RaspberryPiFrame extends JFrame implements Runnable{
 	private volatile Status status = Status.LOGGING;
 	private HashMap<String, String> args;
 	private PrintStream defaultOut, customOut, defaultErr;
-	private TaskController tc;
 	
 	/**
 	 * Launch the application.
@@ -186,6 +185,7 @@ public class RaspberryPiFrame extends JFrame implements Runnable{
 					System.out.println(args.get("logs"));
 				break;
 				case WORKING:
+					this.client.checkForConnection();
 				break;
 				default:
 					System.exit(1);

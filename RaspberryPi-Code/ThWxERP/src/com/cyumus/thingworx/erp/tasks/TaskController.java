@@ -11,7 +11,10 @@ public class TaskController {
 		this.timer = new Timer();
 	}
 	public void startScanning(HashMap<String, ItemThing> items, int delay){
-		this.timer.schedule(new RaspberryPiScanningTask(items), delay);
+		this.timer.schedule(new RaspberryPiScanningTask(items, delay), 0);
+	}
+	public void checkForConnection(int delay){
+		this.timer.schedule(new RaspberryPiCheckConnectionTask(delay), 0);
 	}
 	public void stop(){
 		this.timer.cancel();

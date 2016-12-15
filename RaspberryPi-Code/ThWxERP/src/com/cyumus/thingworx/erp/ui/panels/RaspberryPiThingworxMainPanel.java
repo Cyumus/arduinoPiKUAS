@@ -15,6 +15,7 @@ import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultCaret;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -22,11 +23,14 @@ import com.cyumus.thingworx.erp.things.BinThing;
 import com.cyumus.thingworx.erp.things.ItemThing;
 import com.cyumus.thingworx.erp.things.LocationThing;
 import com.cyumus.thingworx.erp.ui.RaspberryPiFrame;
+import com.cyumus.thingworx.erp.ui.Status;
 import com.cyumus.thingworx.erp.ui.actions.RaspberryPiActionFactory;
 import com.cyumus.thingworx.erp.ui.actions.StartScanAction;
 import com.cyumus.thingworx.erp.ui.actions.StopScanAction;
 import com.cyumus.thingworx.erp.ui.panels.info.RaspberryPiDefaultInfoPanel;
 import com.cyumus.thingworx.erp.ui.panels.info.RaspberryPiInfoPanelFactory;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 
 public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 
@@ -42,6 +46,8 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 	private DefaultMutableTreeNode top;
 	private RaspberryPiDefaultInfoPanel infoPanel;
 	public static JButton btnScan, btnStop;
+	public static JRadioButton rdbtnTw, rdbtnXbee;
+	private JPanel serviceStatus;
 	/**
 	 * Create the panel.
 	 */
@@ -61,6 +67,10 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 			scroll.setBounds(10,300,625,245);
 			scroll.getViewport().setView(textArea);
 			scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			scroll.setBorder(new TitledBorder(new EtchedBorder(), "Logs"));
+			
+			DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 			
 			add(scroll);
 			
@@ -115,6 +125,23 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 			infoPanel = new RaspberryPiDefaultInfoPanel();
 			infoPanel.setBounds(220, 22, 545, 267);
 			add(infoPanel);
+			
+			serviceStatus = new JPanel();
+			serviceStatus.setBounds(676, 300, 89, 57);
+			serviceStatus.setBorder(new TitledBorder(new EtchedBorder(), "Status"));
+			add(serviceStatus);
+			serviceStatus.setLayout(null);
+			
+			rdbtnTw = new JRadioButton("TW");
+			rdbtnTw.setBounds(6, 15, 66, 16);
+			rdbtnTw.setEnabled(false);
+			serviceStatus.add(rdbtnTw);
+			
+			rdbtnXbee = new JRadioButton("XBee");
+			rdbtnXbee.setBounds(6, 34, 66, 16);
+			rdbtnXbee.setEnabled(false);
+			serviceStatus.add(rdbtnXbee);
+			RaspberryPiFrame.getSingleton().update(Status.WORKING);
 		}
 		catch(Exception e){
 			e.printStackTrace();

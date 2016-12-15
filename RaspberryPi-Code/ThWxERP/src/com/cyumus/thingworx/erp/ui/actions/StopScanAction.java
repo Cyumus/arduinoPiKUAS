@@ -14,9 +14,9 @@ public class StopScanAction extends AbstractAction{
 	public void actionPerformed(ActionEvent e) {
 		try {
 			RaspberryPiFrame.getSingleton().getClient().stopScanProcess();
-			RaspberryPiFrame.getSingleton().update(Status.SLEEPING);
 			RaspberryPiThingworxMainPanel.btnScan.setEnabled(true);
 			RaspberryPiThingworxMainPanel.btnStop.setEnabled(false);
+			RaspberryPiFrame.getSingleton().update(Status.WORKING);
 			System.out.println("SCANNING HAS STOPPED");
 		} catch (Exception e1) {
 			e1.printStackTrace();

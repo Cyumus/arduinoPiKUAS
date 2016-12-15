@@ -20,7 +20,6 @@ public class StartScanAction extends AbstractAction{
 			int delay = 
 					RaspberryPiFrame.getSingleton().getPanel().getTime();
 			RaspberryPiFrame.getSingleton().getClient().startScanProcess(items, delay);
-			RaspberryPiFrame.getSingleton().update(Status.WORKING);
 			RaspberryPiThingworxMainPanel.btnScan.setEnabled(false);
 			RaspberryPiThingworxMainPanel.btnStop.setEnabled(true);
 			System.out.println("STARTED TO SCAN "+items.size()+" ITEMS.");

@@ -43,6 +43,13 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	}
 	
 	/**
+	 * This function checks if the cliet is connected to Thingworx by scheduling the task.
+	 */
+	public void checkForConnection(){
+		this.tc.checkForConnection(1000);
+	}
+	
+	/**
 	 * This function makes all things to process and update their current state to Thingworx.
 	 * @throws Exception
 	 */
