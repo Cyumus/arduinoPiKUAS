@@ -17,7 +17,7 @@ public class RaspberryPiScanningTask extends TimerTask {
 	public void run() {
 		String name ="";
 		try {
-			while(true){
+			while(RaspberryPiFrame.getSingleton().getClient().isScanning()){
 				for (ItemThing item:items.values()){
 					name = item.getName();
 					RaspberryPiFrame.getSingleton().getClient().scan(item);

@@ -2,6 +2,8 @@ package com.cyumus.thingworx.erp.ui.panels;
 
 import javax.swing.JPanel;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -19,6 +21,7 @@ public class RaspberryPiThingworxConnectPanel extends RaspberryPiAbstractPanel {
 	private JTextField uNameField;
 	private JTextField portField;
 	private JPasswordField passwordField;
+	private JButton btnConnect;
 	public static final int CONNECT = 0;
 
 	/**
@@ -34,10 +37,11 @@ public class RaspberryPiThingworxConnectPanel extends RaspberryPiAbstractPanel {
 		btnCancel.setText("Cancel");
 		add(btnCancel);
 		
-		JButton btnConnect = new JButton();
+		btnConnect = new JButton();
 		btnConnect.setBounds(237, 230, 89, 23);
 		btnConnect.setAction(RaspberryPiActionFactory.newAction(CONNECT));
 		btnConnect.setText("Connect");
+		btnConnect.setEnabled(false);
 		add(btnConnect);
 		
 		JPanel panel = new JPanel();
@@ -54,32 +58,35 @@ public class RaspberryPiThingworxConnectPanel extends RaspberryPiAbstractPanel {
 		panel.add(connNameField);
 		connNameField.setColumns(10);
 		
-		JLabel lblHostDomain = new JLabel("Host Domain");
+		JLabel lblHostDomain = new JLabel("Host Domain *");
 		lblHostDomain.setBounds(10, 65, 121, 14);
 		panel.add(lblHostDomain);
 		
 		hostField = new JTextField();
 		hostField.setBounds(141, 62, 130, 20);
+		hostField.addFocusListener(new CheckValuesFocusListener());
 		panel.add(hostField);
 		hostField.setColumns(10);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Username *");
 		lblUsername.setBounds(10, 90, 121, 14);
 		panel.add(lblUsername);
 		
 		uNameField = new JTextField();
 		uNameField.setBounds(141, 87, 130, 20);
-		panel.add(uNameField);
+		uNameField.addFocusListener(new CheckValuesFocusListener());
 		uNameField.setColumns(10);
+		panel.add(uNameField);
 		
-		JLabel lblPort = new JLabel("Port");
+		JLabel lblPort = new JLabel("Port *");
 		lblPort.setBounds(281, 65, 46, 14);
 		panel.add(lblPort);
 		
 		portField = new JTextField();
 		portField.setBounds(337, 62, 62, 20);
-		panel.add(portField);
+		portField.addFocusListener(new CheckValuesFocusListener());
 		portField.setColumns(10);
+		panel.add(portField);
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setBounds(10, 115, 70, 14);
@@ -97,5 +104,24 @@ public class RaspberryPiThingworxConnectPanel extends RaspberryPiAbstractPanel {
 		args.put("uname", uNameField.getText());
 		args.put("password", new String(passwordField.getPassword()));
 		return args;
+	}
+	
+	public boolean canDo(){
+		return 	!portField.getText().isEmpty() && portField.getText()!=""&&
+				!uNameField.getText().isEmpty() && uNameField.getText()!=""&&
+				!hostField.getText().isEmpty() && uNameField.getText()!="";
+	}
+	
+	class CheckValuesFocusListener implements FocusListener{
+
+		@Override
+		public void focusGained(FocusEvent e) {			
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			btnConnect.setEnabled(canDo());
+		}
+		
 	}
 }

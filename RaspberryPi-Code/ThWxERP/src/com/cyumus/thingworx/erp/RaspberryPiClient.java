@@ -19,7 +19,8 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	private HashMap<String,BinThing> bins;
 	private HashMap<String,ItemThing> items;
 	private Xbee xbee;
-	private TaskController tc;
+	private TaskController tc, check;
+	private boolean scanning;
 	
 	public RaspberryPiClient(ClientConfigurator config) throws Exception {
 		super(config);
@@ -27,6 +28,7 @@ public class RaspberryPiClient extends ConnectedThingClient {
 		this.bins = new HashMap<String,BinThing>();
 		this.items = new HashMap<String,ItemThing>();
 		this.tc = new TaskController();
+		this.check = new TaskController();
 	}
 	
 	/**
@@ -36,17 +38,19 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	public void startScanProcess(HashMap<String, ItemThing> items, int delay) throws Exception{
 		if (!this.isShutdown() && this.isConnected()){
 			this.tc.startScanning(items, delay);
+			this.scanning = true;
 		}
 	}
 	public void stopScanProcess(){
 		this.tc.stop();
+		this.scanning = false;
 	}
 	
 	/**
 	 * This function checks if the cliet is connected to Thingworx by scheduling the task.
 	 */
 	public void checkForConnection(){
-		this.tc.checkForConnection(1000);
+		this.check.checkForConnection(1000);
 	}
 	
 	/**
@@ -137,4 +141,5 @@ public class RaspberryPiClient extends ConnectedThingClient {
 	public HashMap<String,LocationThing> getLocations(){return this.locs;}
 	public HashMap<String,BinThing> getBins(){return this.bins;}
 	public HashMap<String,ItemThing> getItems(){return this.items;}
+	public boolean isScanning(){return this.scanning;}
 }
