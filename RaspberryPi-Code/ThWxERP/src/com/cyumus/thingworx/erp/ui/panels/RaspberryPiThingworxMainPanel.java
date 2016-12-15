@@ -218,7 +218,7 @@ public class RaspberryPiThingworxMainPanel extends RaspberryPiAbstractPanel  {
 	}
 	
 	public int getTime(){
-		return 1000;
+		return 5000;
 	}
 	public class ItemThingNode extends DefaultMutableTreeNode implements Comparable<Object>{
 		/**

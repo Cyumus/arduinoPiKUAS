@@ -41,6 +41,6 @@ public class MyDataReceiveListener implements IDataReceiveListener {
 	
 	@Override
 	public void dataReceived(XBeeMessage xbeeMessage) {
-		setNewestDistance(Float.parseFloat(new String(xbeeMessage.getData())));
+		setNewestDistance(Float.parseFloat(HexUtils.byteArrayToHexString(xbeeMessage.getData())));
 	}
 }
